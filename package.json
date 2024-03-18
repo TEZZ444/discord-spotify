@@ -1,0 +1,19 @@
+{
+  "name": "discord-spotify-recommendation",
+  "version": "1.0.0",
+  "description": "A Spotify Helper To get Recommendations from links of as track",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.ts",
+    "prepare": "npm run build"
+  },
+  "keywords": [
+    "spotify"
+  ],
+  "author": "Tejas Shettigar",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "axios": "^1.6.8"
+  }
+}
