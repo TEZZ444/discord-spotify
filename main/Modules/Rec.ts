@@ -1,6 +1,7 @@
 import axios from "axios";
+
 export async function getRec(
-    siafy: any,
+    siafy: { getSiaSpotToken: () => Promise<string>; siaLinkConvert: (link: string) => Promise<string> },
     track: string,
     limit: number,
     market: string
@@ -27,3 +28,14 @@ export async function getRec(
         return [];
     }
 }
+
+export async function siaLinkConvert(link: string): Promise<string> {
+    try {
+        const linkParts = link.split("/");
+        return linkParts[linkParts.length - 1];
+    } catch (error) {
+        console.error(error);
+        return "";
+    }
+}
+

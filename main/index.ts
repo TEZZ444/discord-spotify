@@ -10,15 +10,46 @@ export class Siafy {
     private clientId: string;
     private clientSecret: string;
     private tokenCache: TokenCache | null;
-    getRec: (track: string, limit: number, market: string) => Promise<any[]>;
 
     constructor(clientId: string, clientSecret: string) {
         this.clientId = clientId;
         this.clientSecret = clientSecret;
         this.tokenCache = null;
+        this.getRec = (track: string, limit: number, market: string) => this.getRecImpl(track, limit, market);
     }
 
-    async getSiaSpotiToken(): Promise<string> {
+    private async getRecImpl(track: string, limit: number, market: string): Promise<any[]> {
+        return [];
+    }
+    public async getRec(
+        track: string,
+        limit: number,
+        market: string
+    ): Promise<any[]> {
+        try {
+            const siaToken = await this.getSiaSpotToken();
+            const trackId = await this.siaLinkConvert(track);
+            const response = await axios.get(
+                "https://api.spotify.com/v1/recommendations",
+                {
+                    params: {
+                        seed_tracks: trackId,
+                        limit: limit,
+                        market: market,
+                    },
+                    headers: {
+                        Authorization: `Bearer ${siaToken}`,
+                    },
+                }
+            );
+            return response.data.tracks;
+        } catch (error) {
+            console.error(error);
+            return [];
+        }
+    }
+
+    public async getSiaSpotToken(): Promise<string> {
         try {
             if (this.tokenCache && this.tokenCache.expiry > Date.now()) {
                 return this.tokenCache.token;
@@ -46,11 +77,12 @@ export class Siafy {
             };
 
             return siaToken;
-        } catch (siaError) {
+        } catch (siaError:any) {
             throw new Error(siaError);
         }
     }
-    async siaLinkConvert(link: string): Promise<string> {
+
+   public async siaLinkConvert(link: string): Promise<string> {
         try {
             const match = link.match(
                 /https?:\/\/open.spotify.com\/track\/([a-zA-Z0-9]+)/
@@ -62,15 +94,14 @@ export class Siafy {
             }
             const trackId = match[1];
             return trackId;
-        } catch (siError) {
+        } catch (siError:any) {
             throw new Error(siError);
         }
     }
 }
-Siafy.prototype.getRec = function (
-    track: string,
-    limit: number,
-    market: string
-): Promise<any[]> {
-    return getRec(this, track, limit, market);
-};
+
+function discordfy(clientId: string, clientSecret: string): Siafy {
+    return new Siafy(clientId, clientSecret);
+}
+
+export default discordfy;

@@ -1,8 +1,9 @@
 {
   "name": "discord-spotify",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A Spotify Helper for Discord",
   "main": "dist/index.js",
+  "type": "module",
   "scripts": {
     "build": "tsc",
     "start": "node dist/index.ts",
